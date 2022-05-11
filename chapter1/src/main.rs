@@ -2,6 +2,7 @@ fn main() {
     fn_1_1();
     fn_1_2();
     fn_1_3();
+    fn_1_4();
 }
 
 fn fn_1_1() {
@@ -40,4 +41,22 @@ fn fn_1_3() {
     }
 
     let _item_price = (base_price + shipping_cost) * 30;
+}
+
+fn fn_1_4() {
+    // メソッドとして独立させる
+    let quantity = 10;
+    let unit_price = 2;
+    let base_price = quantity * unit_price;
+
+    let shipping_cost = shipping_cost(base_price);
+
+    let _item_price = (base_price + shipping_cost) * 30;
+}
+
+fn shipping_cost(base_price: i32) -> i32 {
+    if base_price < 3000 {
+        return 500;
+    }
+    0
 }
