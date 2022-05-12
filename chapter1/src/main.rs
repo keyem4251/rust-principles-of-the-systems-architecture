@@ -80,7 +80,7 @@ impl ShippingCost {
 
     fn amount(&self) -> i32 {
         if self.base_price < Self::MINIMUM_FOR_FREE {
-            return Self::COST
+            return Self::COST;
         }
         0
     }
@@ -103,7 +103,7 @@ fn fn_1_5() {
 }
 
 struct Quantity {
-    value: i32
+    value: i32,
 }
 
 impl Quantity {
@@ -147,7 +147,7 @@ impl Quantity {
 }
 
 struct Money {
-    value: i32
+    value: i32,
 }
 
 impl Money {
@@ -168,11 +168,34 @@ impl Money {
 // 「型」を使ってコードをわかりやすく安全にする
 fn amount(unit_price: &Money, quantity: &Quantity) -> Money {
     if quantity.is_discountable() {
-           return discount(unit_price, quantity);
+        return discount(unit_price, quantity);
     }
     unit_price.multiply(quantity.value)
 }
 
 fn discount(money: &Money, quantity: &Quantity) -> Money {
     Money::new(money.value * quantity.value * 0.9)
+}
+
+// コレクション型を扱うロジックを専用クラスに閉じ込める
+struct Customer {
+    name: String,
+}
+
+struct Customers {
+    customers: Vec<Customer>,
+}
+
+impl Customers {
+    fn new() -> Self {
+        Customers { customers: vec![] }
+    }
+
+    fn add(&mut self, customer: Customer) {
+        self.customers.push(customer);
+    }
+
+    fn count(&self) -> usize {
+        self.customers.len()
+    }
 }
