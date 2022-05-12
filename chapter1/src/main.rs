@@ -109,6 +109,7 @@ struct Quantity {
 impl Quantity {
     const MIN: i32 = 1;
     const MAX: i32 = 100;
+    const DISCOUNT_CRITERIA: i32 = 10;
 
     fn new(value: i32) -> Self {
         if value < Self::MIN {
@@ -136,4 +137,42 @@ impl Quantity {
     fn add_value(&self, other: &Quantity) -> i32 {
         self.value + other.value
     }
+
+    fn is_discountable(&self) -> bool {
+        if self.value >= Self::DISCOUNT_CRITERIA {
+            return true;
+        }
+        false
+    }
+}
+
+struct Money {
+    value: i32
+}
+
+impl Money {
+    const MIN: i32 = 0;
+
+    fn new(value: i32) -> Self {
+        if value < Self::MIN {
+            panic!("不正: {}未満", Self::MIN);
+        }
+        Self { value }
+    }
+
+    fn multiply(&self, value: i32) -> Self {
+        Money::new(self.value * value)
+    }
+}
+
+// 「型」を使ってコードをわかりやすく安全にする
+fn amount(unit_price: &Money, quantity: &Quantity) -> Money {
+    if quantity.is_discountable() {
+           return discount(unit_price, quantity);
+    }
+    unit_price.multiply(quantity.value)
+}
+
+fn discount(money: &Money, quantity: &Quantity) -> Money {
+    Money::new(money.value * quantity.value * 0.9)
 }
