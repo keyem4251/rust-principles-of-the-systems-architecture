@@ -1,3 +1,7 @@
+extern crate core;
+
+use core::panicking::panic;
+
 fn main() {
     fn_1_1();
     fn_1_2();
@@ -96,4 +100,40 @@ fn fn_1_5() {
     let shipping_cost = shipping_cost2(base_price);
 
     let _item_price = (base_price + shipping_cost) * 30;
+}
+
+struct Quantity {
+    value: i32
+}
+
+impl Quantity {
+    const MIN: i32 = 1;
+    const MAX: i32 = 100;
+
+    fn new(value: i32) -> Self {
+        if value < Self::MIN {
+            panic!("不正: {}未満", Self::MIN);
+        }
+        if value > Self::MAX {
+            panic!("不正: {}超", Self::MAX);
+        }
+        Self { value }
+    }
+
+    fn can_add(&self, other: &Quantity) -> bool {
+        let added = self.add_value(other);
+        added <= Self::MAX
+    }
+
+    fn add(&self, other: &Quantity) -> Quantity {
+        if !self.can_add(other) {
+            panic!("不正:合計が{}超", Self::MAX);
+        }
+        let added = self.add_value(&other);
+        Quantity { value: added }
+    }
+
+    fn add_value(&self, other: &Quantity) -> i32 {
+        self.value + other.value
+    }
 }
