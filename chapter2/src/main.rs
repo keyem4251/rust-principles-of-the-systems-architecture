@@ -135,6 +135,7 @@ fn fn_2_4() {
 }
 
 fn fn_2_5() {
+    // 区分ごとのクラスを同じ型をとして扱う
     trait Fee {
         fn yen(&self) -> Yen;
         fn label(&self) -> String;
