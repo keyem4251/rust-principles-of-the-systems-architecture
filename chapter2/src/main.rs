@@ -3,6 +3,7 @@ fn main() {
     fn_2_2();
     fn_2_3();
     fn_2_4();
+    fn_2_5();
 }
 
 struct Yen { 
@@ -131,4 +132,61 @@ fn fn_2_4() {
 
     let fee3 = SeniorFee::new();
     println!("{}: {}", fee3.label(), fee3.fee().value);
+}
+
+fn fn_2_5() {
+    trait Fee {
+        fn yen(&self) -> Yen;
+        fn label(&self) -> String;
+    }
+
+    struct AdultFee {}
+
+    impl AdultFee {
+        fn new() -> Self {
+            AdultFee {}
+        }
+    }
+
+    impl Fee for AdultFee {
+        fn yen(&self) -> Yen {
+            Yen::new(100)
+        }
+
+        fn label(&self) -> String {
+            "大人".to_string()
+        }
+    }
+
+    struct ChildFee {}
+
+    impl ChildFee {
+        fn new() -> Self {
+            ChildFee {}
+        }
+    }
+
+    impl Fee for ChildFee {
+        fn yen(&self) -> Yen {
+            Yen::new(50)
+        }
+
+        fn label(&self) -> String {
+            "子供".to_string()
+        }
+    }
+
+    struct Charge { 
+        fee: Box<dyn Fee>,
+    }
+
+    impl Charge {
+        fn new(fee: Box<dyn Fee>) -> Self {
+            Charge { fee }
+        } 
+
+        fn yen(&self) -> Yen {
+            self.fee.yen()
+        }
+    }
 }
