@@ -1,7 +1,5 @@
 extern crate core;
 
-use core::panicking::panic;
-
 fn main() {
     fn_1_1();
     fn_1_2();
@@ -174,7 +172,7 @@ fn amount(unit_price: &Money, quantity: &Quantity) -> Money {
 }
 
 fn discount(money: &Money, quantity: &Quantity) -> Money {
-    Money::new(money.value * quantity.value * 0.9)
+    Money::new(money.value * quantity.value - 10)
 }
 
 // コレクション型を扱うロジックを専用クラスに閉じ込める
