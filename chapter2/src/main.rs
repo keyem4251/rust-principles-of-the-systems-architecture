@@ -2,6 +2,7 @@ fn main() {
     fn_2_1();
     fn_2_2();
     fn_2_3();
+    fn_2_4();
 }
 
 struct Yen { 
@@ -72,4 +73,62 @@ fn fn_2_3() {
     
     let yen = fee();
     println!("{}", yen.value);
+}
+
+fn fn_2_4() {
+    // 区分ごとのロジックを別のクラスに分けて記述する
+    struct AdultFee {}
+    
+    impl AdultFee {
+        fn new() -> Self {
+            AdultFee {}
+        }
+
+        fn fee(&self) -> Yen {
+            Yen::new(100)
+        }
+
+        fn label(&self) -> String {
+            "大人".to_string()
+        }
+    }
+
+    struct ChildFee {}
+    
+    impl ChildFee {
+        fn new() -> Self {
+            ChildFee {}
+        }
+        fn fee(&self) -> Yen {
+            Yen::new(50)
+        }
+
+        fn label(&self) -> String {
+            "子供".to_string()
+        }
+    }
+
+    struct SeniorFee {}
+
+    impl SeniorFee {
+        fn new() -> Self {
+            SeniorFee {}
+        }
+        fn fee(&self) -> Yen {
+            Yen::new(80)
+        }
+
+        fn label(&self) -> String {
+            "シニア".to_string()
+        }
+    }
+
+    let fee1 = AdultFee::new();
+    println!("{}: {}", fee1.label(), fee1.fee().value);
+
+    let fee2 = ChildFee::new();
+    println!("{}: {}", fee2.label(), fee2.fee().value);
+
+    let fee3 = SeniorFee::new();
+    println!("{}: {}", fee3.label(), fee3.fee().value);
 }
