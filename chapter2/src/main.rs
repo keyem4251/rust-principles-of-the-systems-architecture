@@ -14,6 +14,10 @@ impl Yen {
     fn new(value: i32) -> Self {
         Yen { value }
     }
+
+    fn add(&self, yen: &Yen) -> Self {
+        Yen { value: self.value + yen.value }
+    }
 }
 
 fn is_baby(cutomer_type: &str) -> bool {
@@ -190,4 +194,42 @@ fn fn_2_5() {
             self.fee.yen()
         }
     }
+
+    struct Reservation {
+        fees: Vec<Box<dyn Fee>>
+    }
+
+    impl Reservation {
+        fn new() -> Self {
+            Reservation {
+                fees: vec![],
+            }
+        }
+
+        fn add_fee(&mut self, fee: Box<dyn Fee>) {
+            self.fees.push(fee);
+        }
+
+        fn fee_total(&self) -> Yen {
+            let mut total = Yen::new(0);
+            for fee in &self.fees {
+                total = total.add(&fee.yen());
+            }
+            total
+        }
+    }
+
+    let adult_fee_struct = AdultFee::new();
+    let child_fee_struct = ChildFee::new();
+    let adult_charge = Charge::new(Box::new(adult_fee_struct));
+    let child_charge = Charge::new(Box::new(child_fee_struct));
+    println!("{}", adult_charge.yen().value);
+    println!("{}", child_charge.yen().value);
+
+    let mut reservation = Reservation::new();
+    let adult_fee_struct2 = AdultFee::new();
+    let child_fee_struct2 = ChildFee::new();
+    reservation.add_fee(Box::new(adult_fee_struct2));
+    reservation.add_fee(Box::new(child_fee_struct2));
+    println!("{}", reservation.fee_total().value);
 }
