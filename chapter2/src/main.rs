@@ -1,3 +1,6 @@
+use std::collections::HashMap;
+use std::collections::HashSet;
+
 fn main() {
     fn_2_1();
     fn_2_2();
@@ -7,6 +10,7 @@ fn main() {
     fn_2_6();
     fn_2_7();
     fn_2_8();
+    fn_2_9();
 }
 
 struct Yen { 
@@ -374,4 +378,66 @@ fn fn_2_8() {
 
     let child_fee_type = FeeType::of_child_fee();
     println!("2_8: {}", child_fee_type.label());
+}
+
+fn fn_2_9() {
+    #[derive(PartialEq, Eq, Hash)]
+    enum State {
+        Review,
+        Approved,
+        Implementation,
+        Completed,
+        Reverting,
+        Suspended,
+    }
+
+    struct StateTransitions {
+        allowed: HashMap<State, HashSet<State>>,
+    }
+
+    impl StateTransitions {
+        fn new() -> Self {
+            let mut allowed = HashMap::new();
+
+            let mut reviewed_to = HashSet::new();
+            reviewed_to.insert(State::Approved);
+            reviewed_to.insert(State::Reverting);
+            allowed.insert(State::Review, reviewed_to);
+
+            let mut reverting_to = HashSet::new();
+            reverting_to.insert(State::Implementation);
+            reverting_to.insert(State::Completed);
+            allowed.insert(State::Reverting, reverting_to);
+
+            let mut approved_to = HashSet::new();
+            approved_to.insert(State::Implementation);
+            approved_to.insert(State::Completed);
+            allowed.insert(State::Approved, approved_to);
+
+            let mut implementation_to = HashSet::new();
+            implementation_to.insert(State::Suspended);
+            implementation_to.insert(State::Completed);
+            allowed.insert(State::Implementation, implementation_to);
+
+            let mut suspended_to = HashSet::new();
+            suspended_to.insert(State::Implementation);
+            suspended_to.insert(State::Completed);
+            allowed.insert(State::Suspended, suspended_to);
+
+            StateTransitions { allowed }
+        }
+
+        fn can_transit(&self, from: &State, to: &State) -> bool {
+            match self.allowed.get(from) {
+                Some(allowed_states) => allowed_states.contains(to),
+                _ => {
+                    println!("不正な値");
+                    false
+                },
+            }
+        }
+    }
+
+    let state_transitions = StateTransitions::new();
+    println!("{}", state_transitions.can_transit(&State::Review, &State::Completed));
 }
