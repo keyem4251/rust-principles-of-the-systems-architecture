@@ -4,6 +4,7 @@ fn main() {
     fn_2_3();
     fn_2_4();
     fn_2_5();
+    fn_2_6();
 }
 
 struct Yen { 
@@ -223,13 +224,72 @@ fn fn_2_5() {
     let child_fee_struct = ChildFee::new();
     let adult_charge = Charge::new(Box::new(adult_fee_struct));
     let child_charge = Charge::new(Box::new(child_fee_struct));
-    println!("{}", adult_charge.yen().value);
-    println!("{}", child_charge.yen().value);
+    println!("2_5: {}", adult_charge.yen().value);
+    println!("2_5: {}", child_charge.yen().value);
 
     let mut reservation = Reservation::new();
     let adult_fee_struct2 = AdultFee::new();
     let child_fee_struct2 = ChildFee::new();
     reservation.add_fee(Box::new(adult_fee_struct2));
     reservation.add_fee(Box::new(child_fee_struct2));
-    println!("{}", reservation.fee_total().value);
+    println!("2_5: {}", reservation.fee_total().value);
+}
+
+fn fn_2_6() {
+    // if文を使わずに区分ごとのオブジェクトを生成する
+    trait Fee {
+        fn yen(&self) -> Yen;
+        fn label(&self) -> String;
+    }
+
+    struct AdultFee {}
+
+    impl AdultFee {
+        fn new() -> Self {
+            AdultFee {}
+        }
+    }
+
+    impl Fee for AdultFee {
+        fn yen(&self) -> Yen {
+            Yen::new(100)
+        }
+
+        fn label(&self) -> String {
+            "大人".to_string()
+        }
+    }
+
+    struct ChildFee {}
+
+    impl ChildFee {
+        fn new() -> Self {
+            ChildFee {}
+        }
+    }
+
+    impl Fee for ChildFee {
+        fn yen(&self) -> Yen {
+            Yen::new(50)
+        }
+
+        fn label(&self) -> String {
+            "子供".to_string()
+        }
+    }
+
+    struct FeeFactory {}
+
+    impl FeeFactory {
+        fn fee_by_name(name: &str) -> Box<dyn Fee> {
+            match name {
+                "adult" => Box::new(AdultFee::new()),
+                "child" => Box::new(ChildFee::new()),
+                _ => panic!("不正な区分です"),
+            }
+        }
+    }
+
+    let adult_fee_struct = FeeFactory::fee_by_name("adult");
+    println!("2_6: {}", adult_fee_struct.yen().value);
 }
