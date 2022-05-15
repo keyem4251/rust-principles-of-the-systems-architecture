@@ -5,6 +5,7 @@ fn main() {
     fn_2_4();
     fn_2_5();
     fn_2_6();
+    fn_2_7();
 }
 
 struct Yen { 
@@ -292,4 +293,30 @@ fn fn_2_6() {
 
     let adult_fee_struct = FeeFactory::fee_by_name("adult");
     println!("2_6: {}", adult_fee_struct.yen().value);
+}
+
+fn fn_2_7() {
+    // 列挙型を使用する
+    #[derive(PartialEq)]
+    enum FeeType {
+        Adult,
+        _Child,
+        _Senior,
+    }
+
+    struct Guest {
+        fee_type: FeeType,
+    }
+
+    impl Guest {
+        fn new() -> Self {
+            Guest { fee_type: FeeType::Adult }
+        }
+
+        fn is_adult(&self) -> bool {
+            self.fee_type == FeeType::Adult
+        }
+    }
+    let guest = Guest::new();
+    println!("2_7: {}", guest.is_adult());
 }
