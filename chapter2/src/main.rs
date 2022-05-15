@@ -381,6 +381,8 @@ fn fn_2_8() {
 }
 
 fn fn_2_9() {
+    // 状態の繊維ルールをenumで記述する
+    
     #[derive(PartialEq, Eq, Hash)]
     enum State {
         Review,
