@@ -6,6 +6,7 @@ fn main() {
     fn_2_5();
     fn_2_6();
     fn_2_7();
+    fn_2_8();
 }
 
 struct Yen { 
@@ -319,4 +320,58 @@ fn fn_2_7() {
     }
     let guest = Guest::new();
     println!("2_7: {}", guest.is_adult());
+}
+
+fn fn_2_8() {
+    // enumにロジックを入れる
+    struct AdultFee {}
+
+    impl AdultFee {
+        fn new() -> Self {
+            AdultFee {}
+        }
+    }
+
+    struct ChildFee {}
+
+    impl ChildFee {
+        fn new() -> Self {
+            ChildFee {}
+        }
+    }
+
+    enum FeeType {
+        Adult(AdultFee),
+        Child(ChildFee),
+    }
+
+    impl FeeType {
+        fn of_adult_fee() -> Self {
+            FeeType::Adult(AdultFee::new())
+        }
+
+        fn of_child_fee() -> Self {
+            FeeType::Child(ChildFee::new())
+        }
+
+        fn yen(&self) -> Yen {
+            match self {
+                FeeType::Adult(_s) => Yen::new(100),
+                FeeType::Child(_s) => Yen::new(50),
+            }
+        }
+
+        fn label(&self) -> String {
+            match self {
+                FeeType::Adult(_s) => "大人".to_string(),
+                FeeType::Child(_s) => "子供".to_string(),
+            }
+        }
+    }
+
+    let adult_fee_type = FeeType::of_adult_fee();
+    println!("2_8: {}", adult_fee_type.yen().value);
+
+    let child_fee_type = FeeType::of_child_fee();
+    println!("2_8: {}", child_fee_type.label());
 }
