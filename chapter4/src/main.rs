@@ -26,20 +26,38 @@ fn fn_4_1() {
     println!("{}", due_date.is_expired(&Local::today()));
 }
 
-trait Rule<T> where T: Eq + Hash + PartialEq {
+trait Rule {
     fn ok(&self, value: i32) -> bool;
     fn ng(&self, value: i32) -> bool {
         self.ok(value)
     }
+    fn eq(&self) -> bool;
+    fn hash(&self);
 }
 
-struct Policy<T> {
-    rules: HashSet<Box<dyn Rule<T>>>
+impl PartialEq for dyn Rule {
+    fn eq(&self, other: &Self) -> bool {
+        self.eq()
+    }
 }
 
-impl<T> Policy<T> {
+impl Hash for dyn Rule {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.hash()
+    }
+}
+
+impl Eq for dyn Rule {
+    
+}
+
+struct Policy {
+    rules: HashSet<Box<dyn Rule>>
+}
+
+impl Policy {
     fn new() -> Self {
-        let rules: HashSet<Box<dyn Rule<T>>> = HashSet::new();
+        let rules: HashSet<Box<dyn Rule>> = HashSet::new();
         Policy { rules }
     }
 
@@ -52,7 +70,7 @@ impl<T> Policy<T> {
         true
     }
 
-    fn add_rule(&mut self, rule: &Box<dyn Rule<T>>) {
+    fn add_rule(&mut self, rule: Box<dyn Rule>) {
         self.rules.insert(rule);
     }
 }
